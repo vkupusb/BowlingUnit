@@ -3,9 +3,11 @@ Bowling game app
 
 1. Introduction
 1.1 Purpose
+   
     The purpose of this software is to calculate the total score of a single player in a bowling game. The program will allow users to input the number of pins knocked down on each roll, calculate the score based on the rules of bowling, and output the total score at the end of the game.
 
 1.2 Scope
+
     This software will support the calculation of a single-player bowling game, which consists of 10 frames. The user can input the number of pins knocked down in each roll, and the program will calculate the score according to the rules of bowling (strikes, spares, and regular frames).
 
 1.3 Definitions, Acronyms, and Abbreviations
