@@ -10,4 +10,4 @@ add_executable(BowlingGame
     src/main.cpp
     src/Player.cpp 
     src/Frame.cpp
-    src/BowlingUnit)
+    src/BowlingUnit.cpp)
