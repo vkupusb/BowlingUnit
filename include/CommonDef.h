@@ -1,6 +1,6 @@
 #pragma once
 #include <cstdint>
-constexpr unsigned int MIN_ROLL_SCORE{ 0 };
-constexpr unsigned int MAX_ROLL_SCORE{ 10 };
-constexpr unsigned int MAX_TOTAL_SCORE{ 300 };
-constexpr unsigned int MAX_FRAME_COUNT{ 10 };
+constexpr uint16_t MIN_ROLL_SCORE{0};
+constexpr uint16_t MAX_ROLL_SCORE{10};
+constexpr uint16_t MAX_TOTAL_SCORE{300};
+constexpr uint16_t MAX_FRAME_COUNT{10};

@@ -1,7 +1,8 @@
 #pragma once
 #include "CommonDef.h"
 
-namespace BowlingGame::Frame {
+namespace BowlingGame::Frame
+{
 	class Frame
 	{
 	public:
@@ -14,7 +15,7 @@ namespace BowlingGame::Frame {
 		\param	score data as unsigned int
 		\return None
 		*/
-		virtual void setFirstRollScore(unsigned int);
+		virtual bool setFirstRollScore(const uint16_t &rollScore);
 
 		/*
 		\brief	return score value of frist roll for each frame
@@ -22,7 +23,7 @@ namespace BowlingGame::Frame {
 		\param	None
 		\return score data as unsigned int
 		*/
-		virtual unsigned int getFirstRollScore();
+		virtual const uint16_t &getFirstRollScore() const;
 
 		/*
 		\brief	store the second roll score for each frame
@@ -30,7 +31,7 @@ namespace BowlingGame::Frame {
 		\param	score data as unsigned int
 		\return None
 		*/
-		virtual void setSecondRollScore(unsigned int);
+		virtual bool setSecondRollScore(const uint16_t &rollScore);
 
 		/*
 		\brief	return score value of second roll for each frame
@@ -38,7 +39,7 @@ namespace BowlingGame::Frame {
 		\param	None
 		\return score data as unsigned int
 		*/
-		virtual unsigned int getSecondRollScore();
+		virtual const uint16_t &getSecondRollScore() const;
 
 		/*
 		\brief	check if strike in each frame
@@ -46,7 +47,7 @@ namespace BowlingGame::Frame {
 		\param	None
 		\return true if stike, otherwise false
 		*/
-		virtual bool isStrike();
+		virtual const bool &isStrike() const;
 
 		/*
 		\brief	check if spare in each frame
@@ -54,15 +55,15 @@ namespace BowlingGame::Frame {
 		\param	None
 		\return true if spare, otherwise false
 		*/
-		virtual bool isSpare();
+		virtual const bool &isSpare() const;
 
 		/*
-		\brief	store the frame score 
+		\brief	store the frame score
 		\author	Vishvanathan K
 		\param	score data as unsigned int
 		\return None
 		*/
-		virtual void setFrameScore(unsigned int);
+		virtual bool setFrameScore(const uint16_t &frameScore);
 
 		/*
 		\brief	return score value of frame
@@ -70,7 +71,7 @@ namespace BowlingGame::Frame {
 		\param	None
 		\return frame score data as unsigned int
 		*/
-		virtual unsigned int getFrameScore();
+		virtual const uint16_t &getFrameScore() const;
 
 		/*
 		\brief	store the third roll score of frame10
@@ -78,7 +79,7 @@ namespace BowlingGame::Frame {
 		\param	score data as unsigned int
 		\return None
 		*/
-		virtual void setThirdRollScore(unsigned int score);
+		virtual bool setThirdRollScore(const uint16_t &rollScore);
 
 		/*
 		\brief	return score value of third roll of frame 10
@@ -86,23 +87,25 @@ namespace BowlingGame::Frame {
 		\param	None
 		\return score data as unsigned int
 		*/
-		virtual unsigned int getThirdRollScore();
-	protected:
-		unsigned int m_nFirstRoll; /*!< first roll value */
-		unsigned int m_nSecondRoll; /*!< second roll value */
-		unsigned int m_nFrameScore; /*!< frame score value */
-		bool m_bFrameStrike; /*!< strike of frame value */
-		bool m_bFrameSpare; /*!< spare of frame value */
+		virtual const uint16_t &getThirdRollScore() const;
 
+	protected:
+		uint16_t m_firstRoll;  /*!< first roll value */
+		uint16_t m_secondRoll; /*!< second roll value */
+		uint16_t m_frameScore; /*!< frame score value */
+		bool m_isFrameStrike;  /*!< strike of frame value */
+		bool m_isFrameSpare;   /*!< spare of frame value */
 	};
 
-	class NormalFrame : public Frame {
+	class NormalFrame : public Frame
+	{
 	public:
 		NormalFrame() = default;
 		~NormalFrame() = default;
 	};
 
-	class FinalFrame : public Frame {
+	class FinalFrame : public Frame
+	{
 	public:
 		FinalFrame();
 		~FinalFrame() = default;
@@ -113,7 +116,7 @@ namespace BowlingGame::Frame {
 		\param	score data as unsigned int
 		\return None
 		*/
-		void setThirdRollScore(unsigned int score);
+		bool setThirdRollScore(const uint16_t &rollScore);
 
 		/*
 		\brief	return score value of third roll of frame 10
@@ -121,8 +124,9 @@ namespace BowlingGame::Frame {
 		\param	None
 		\return score data as unsigned int
 		*/
-		unsigned int getThirdRollScore();
+		const uint16_t &getThirdRollScore() const;
+
 	private:
-		unsigned int m_nThirdRoll; /*!< third roll value */
+		uint16_t m_thirdRoll; /*!< third roll value */
 	};
 };
