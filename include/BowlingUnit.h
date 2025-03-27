@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Player.h"
+#include "CommonDef.h"
 
 namespace BowlingGame::Unit
 {

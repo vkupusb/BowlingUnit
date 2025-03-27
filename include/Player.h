@@ -1,9 +1,5 @@
 #pragma once
-#include <vector>
-#include <memory>
-#include <string>
-#include <string_view>
-
+#include "CommonDef.h"
 #include "Frame.h"
 
 namespace BowlingGame::Players
@@ -39,12 +35,28 @@ namespace BowlingGame::Players
 		std::string getPlayerName();
 
 		/*
+		\brief	return player first name
+		\author	Vishvanathan K
+		\param	None
+		\return player first name as string
+		*/
+		const std::string &getPlayerFirstName() const;
+
+		/*
+		\brief	return player last name
+		\author	Vishvanathan K
+		\param	None
+		\return player last name as string
+		*/
+		const std::string &getPlayerLastName() const;
+
+		/*
 		\brief	calculate the total score from each frame
 		\author	Vishvanathan K
 		\param	None
 		\return None
 		*/
-		uint16_t calculateTotalScore();
+		const uint16_t &calculateTotalScore();
 
 		/*
 		\brief	return total score of the player
@@ -52,7 +64,7 @@ namespace BowlingGame::Players
 		\param	None
 		\return total score data as unsigned int
 		*/
-		uint16_t getTotalScore();
+		const uint16_t &getTotalScore();
 
 		/*
 		\brief	get the each roll data from console window
