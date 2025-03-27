@@ -1,5 +1,8 @@
 #include <algorithm>
 #include <iostream>
+#include <format>
+#include <limits>
+
 #include "Player.h"
 
 /*
@@ -7,9 +10,9 @@ BowlingGame~COD~Trace
 @VRF_SRS: NA
 @VRF_SDD: NA
 */
-BowlingGame::Players::Player::Player() :mTotalScore{ 0 }, mFirstName{},mLastName{}
+BowlingGame::Players::Player::Player() : m_totalScore{0}, m_firstName{}, m_lastName{}
 {
-	mFrames.reserve(MAX_FRAME_COUNT); // reserver space for 10 frames
+	m_frames.reserve(MAX_FRAME_COUNT); // reserver space for 10 frames
 }
 
 /*
@@ -17,14 +20,17 @@ BowlingGame~COD~Trace
 @VRF_SRS: NA
 @VRF_SDD: NA
 */
-void BowlingGame::Players::Player::createFrames()
+bool BowlingGame::Players::Player::createFrames()
 {
-	for (auto count = 0; count < (MAX_FRAME_COUNT - 1); count++) {
+	for (uint16_t frameIndex = 0; frameIndex < (MAX_FRAME_COUNT - 1); frameIndex++)
+	{
 		auto frame = std::make_shared<BowlingGame::Frame::NormalFrame>();
-		mFrames.push_back(std::move(frame)); // add frame into vector
+		m_frames.push_back(std::move(frame)); // add frame into vector
 	}
 	auto frame = std::make_unique<BowlingGame::Frame::FinalFrame>();
-	mFrames.push_back(std::move(frame));
+	m_frames.push_back(std::move(frame));
+
+	return true;
 }
 
 /*
@@ -32,10 +38,15 @@ BowlingGame~COD~Trace
 @VRF_SRS: NA
 @VRF_SDD: NA
 */
-void BowlingGame::Players::Player::setPlayerName(std::string_view first_name, std::string_view last_name)
+bool BowlingGame::Players::Player::setPlayerName(const std::string_view &first_name, const std::string_view &last_name)
 {
-	mFirstName = first_name;
-	mLastName = last_name;
+	if ((m_firstName != first_name) || (m_lastName != last_name))
+	{
+		m_firstName = first_name;
+		m_lastName = last_name;
+		return true;
+	}
+	return false;
 }
 
 /*
@@ -45,7 +56,10 @@ BowlingGame~COD~Trace
 */
 std::string BowlingGame::Players::Player::getPlayerName()
 {
-	return mFirstName +" " + mLastName;
+	std::string playerName = m_firstName;
+	playerName.append(" ");
+	playerName.append(m_lastName);
+	return playerName;
 }
 
 /*
@@ -53,43 +67,16 @@ BowlingGame~COD~Trace
 @VRF_SRS: NA
 @VRF_SDD: NA
 */
-void BowlingGame::Players::Player::calculateTotalScore()
+uint16_t BowlingGame::Players::Player::calculateTotalScore()
 {
-	for(auto index=0; index < MAX_FRAME_COUNT; index++){
-		mTotalScore += mFrames[index]->getFirstRollScore(); // get first rool score
-		if (mFrames[index]->isStrike() && index < (MAX_FRAME_COUNT-1)){
-			mTotalScore += mFrames[index+1]->getFirstRollScore(); // if strike, next roll score from next frame
-			if (mFrames[index+1]->isStrike()){
-				mTotalScore += mFrames[index+2]->getFirstRollScore();// if strike, next roll score from next frame
-			}
-			else{
-				mTotalScore += mFrames[index+1]->getSecondRollScore(); // if strike, next roll score from the same frame
-			}
-		}
-		else if(mFrames[index]->isStrike() && index == (MAX_FRAME_COUNT-1)){ // Frame 10
-			mTotalScore += mFrames[index]->getSecondRollScore();
-			mTotalScore += mFrames[index]->getThirdRollScore();
+	uint16_t frameIndex{0};
 
-		}
-		else if (mFrames[index]->isSpare()){
-			mTotalScore += mFrames[index]->getSecondRollScore(); // if spare, get the second roll score in the same frame
-			if (index == (MAX_FRAME_COUNT-1)){
-				mTotalScore += mFrames[index]->getThirdRollScore();// if spare, get the third roll score from the last frame
+	calculateFirstToEightFrameScore(frameIndex);
+	calculateNinthFrameScore(frameIndex);
+	frameIndex++;
+	calculateFinalFrameScore(frameIndex);
 
-			}else{
-				mTotalScore += mFrames[index+1]->getFirstRollScore();
-
-			}
-			
-		}
-		else{
-			mTotalScore += mFrames[index]->getSecondRollScore(); //if no strike, get score of the current frame
-		}
-
-		std::cout<<"Frame:"<<(index+1)<<"="<<mTotalScore<<" ";
-
-	}
-	std::cout <<'\n'<< getPlayerName() << " scored " << mTotalScore << " points\n";
+	return m_totalScore;
 }
 
 /*
@@ -99,7 +86,7 @@ BowlingGame~COD~Trace
 */
 uint16_t BowlingGame::Players::Player::getTotalScore()
 {
-	return mTotalScore;
+	return m_totalScore;
 }
 
 /*
@@ -109,38 +96,47 @@ BowlingGame~COD~Trace
 */
 void BowlingGame::Players::Player::getRollScore()
 {
-	for (auto index = 1; index <= MAX_FRAME_COUNT; index++) {
-		auto score1{ 0 }, score2{ 0 };
-		auto rollNumber{ 1 };
-		score1 = getScorFromConsole(index, rollNumber,score2);
-		mFrames[index-1]->setFirstRollScore(score1); // roll 1 score
-		if (score1 < MAX_ROLL_SCORE) { // if not strike or less pin, the allow second roll in the current frame
-			rollNumber++;
-			score2 = getScorFromConsole(index, rollNumber, score1);
-			mFrames[index-1]->setSecondRollScore(score2);
-		}
-		if (index == MAX_FRAME_COUNT){ //Frame 10
+	uint16_t roll1Score{0}, roll2Score{0}, roll3Score{0}, rollNumber{1};
+	uint16_t frameIndex{0};
 
-			auto score3{0}, totalFrameScore{0};
+	// get roll score from frame 1 to  frame 9
+	for (; frameIndex < (MAX_FRAME_COUNT - 1); frameIndex++)
+	{
+		roll1Score = getRollScoreFromConsole(frameIndex, rollNumber++);
+		m_frames[frameIndex]->setFirstRollScore(roll1Score); // roll 1 score
+		if (roll1Score < MAX_ROLL_SCORE)
+		{
+			roll2Score = getRollScoreFromConsole(frameIndex, rollNumber, roll1Score);
+			m_frames[frameIndex]->setSecondRollScore(roll2Score);
+		}
+		rollNumber = 1;
+		m_frames[frameIndex]->setFrameScore((roll1Score + roll2Score));
+	}
 
-			if (mFrames[index-1]->isStrike()){
-				score2 = getScorFromConsole(index, ++rollNumber, 0);
-				mFrames[index-1]->setSecondRollScore(score2);
-				score3 = getScorFromConsole(index, ++rollNumber, 0);
-				mFrames[index-1]->setThirdRollScore(score3);
-				totalFrameScore = score1 + score2 + score3;
-			}
-			else if(mFrames[index-1]->isSpare()){
-				auto score3 = getScorFromConsole(index, ++rollNumber, 0);
-				mFrames[index-1]->setThirdRollScore(score3);
-				totalFrameScore = score1 + score2 + score3;
-			}
-			mFrames[index - 1]->setFrameScore(totalFrameScore);
+	// get roll score only for frame 10
+	if (frameIndex == (MAX_FRAME_COUNT - 1))
+	{
+		roll1Score = getRollScoreFromConsole(frameIndex, rollNumber++);
+		m_frames[frameIndex]->setFirstRollScore(roll1Score);
+
+		// if frame 10 has strike, then get next roll score
+		if (m_frames[frameIndex]->isStrike())
+		{
+			roll2Score = getRollScoreFromConsole(frameIndex, rollNumber++);
 		}
-		else{
-			mFrames[index - 1]->setFrameScore(score1 + score2);
+		else
+		{
+			roll2Score = getRollScoreFromConsole(frameIndex, rollNumber++, roll1Score); // normal case
 		}
-		
+		m_frames[frameIndex]->setSecondRollScore(roll2Score);
+
+		// get extra roll score if strike or spare
+		if (m_frames[frameIndex]->isStrike() || m_frames[frameIndex]->isSpare())
+		{
+			roll3Score = getRollScoreFromConsole(frameIndex, rollNumber);
+			m_frames[frameIndex]->setThirdRollScore(roll3Score);
+		}
+		m_frames[frameIndex]->setFrameScore((roll1Score + roll2Score + roll3Score));
 	}
 }
 
@@ -149,18 +145,119 @@ BowlingGame~COD~Trace
 @VRF_SRS: NA
 @VRF_SDD: NA
 */
-int BowlingGame::Players::Player::getScorFromConsole(int index, int rollNum, int prevScore)
+uint16_t BowlingGame::Players::Player::getRollScoreFromConsole(const uint16_t &frameIndex, const uint16_t &rollNum, const uint16_t &prevRollScore)
 {
-	auto flag{ false };
-	auto score{ 0 };
-	do {
-		flag = false;
-		std::cout << "Frame:" << index << " ,Roll" << rollNum << ": ";
-		std::cin >> score;
-		if ((score + prevScore) > 10) {
-			flag = true;
+	bool isValidScore{false};
+	uint16_t rollScore{0};
+	do
+	{
+		std::cout << std::format("Frame:{},Roll{}:", (frameIndex + 1), rollNum);
+		std::cin >> rollScore;
+		isValidScore = isValidRollScore((rollScore + prevRollScore));
+		if (!isValidScore)
+		{
 			std::cout << "Please enter valid score (0-10)\n";
 		}
-	} while (flag);
-	return score;
+	} while (!isValidScore);
+	return rollScore;
+}
+
+/*
+BowlingGame~COD~Trace
+@VRF_SRS: NA
+@VRF_SDD: NA
+*/
+bool BowlingGame::Players::Player::isValidRollScore(const uint8_t &rollScore)
+{
+	if ((rollScore < MIN_ROLL_SCORE) || (rollScore > MAX_ROLL_SCORE))
+	{
+		return false;
+	}
+	return true;
+}
+
+/*
+BowlingGame~COD~Trace
+@VRF_SRS: NA
+@VRF_SDD: NA
+*/
+void BowlingGame::Players::Player::calculateFirstToEightFrameScore(uint16_t &frameIndex)
+{
+	for (; frameIndex < (MAX_FRAME_COUNT - 2); frameIndex++)
+	{
+		m_totalScore += m_frames[frameIndex]->getFirstRollScore(); // get first rool score
+		if (m_frames[frameIndex]->isStrike())
+		{
+			m_totalScore += m_frames[frameIndex + 1]->getFirstRollScore(); // if strike, next roll score from next frame
+			if (m_frames[frameIndex + 1]->isStrike())
+			{
+				m_totalScore += m_frames[frameIndex + 2]->getFirstRollScore(); // if strike, next roll score from next frame
+			}
+			else
+			{
+				m_totalScore += m_frames[frameIndex+1]->getSecondRollScore();
+			}
+		}
+		else if (m_frames[frameIndex]->isSpare())
+		{
+			m_totalScore += m_frames[frameIndex]->getSecondRollScore();
+			m_totalScore += m_frames[frameIndex + 1]->getFirstRollScore();
+		}
+		else
+		{
+			m_totalScore += m_frames[frameIndex]->getSecondRollScore(); // if no strike, get score of the current frame
+		}
+
+		std::cout << std::format("Frame:{}", (frameIndex + 1)) << "=" << m_totalScore << " ";
+	}
+}
+
+/*
+BowlingGame~COD~Trace
+@VRF_SRS: NA
+@VRF_SDD: NA
+*/
+void BowlingGame::Players::Player::calculateNinthFrameScore(uint16_t &frameIndex)
+{
+	if (frameIndex == MAX_FRAME_COUNT - 2)
+	{
+		m_totalScore += m_frames[frameIndex]->getFirstRollScore();
+		if (m_frames[frameIndex]->isStrike())
+		{
+			m_totalScore += m_frames[MAX_FRAME_COUNT - 1]->getFirstRollScore();
+			m_totalScore += m_frames[MAX_FRAME_COUNT - 1]->getSecondRollScore();
+		}
+		else if (m_frames[frameIndex]->isSpare())
+		{
+			m_totalScore += m_frames[frameIndex]->getSecondRollScore();
+			m_totalScore += m_frames[MAX_FRAME_COUNT - 1]->getFirstRollScore();
+		}
+		else
+		{
+			m_totalScore += m_frames[frameIndex]->getSecondRollScore();
+		}
+
+		std::cout << std::format("Frame:{}", (frameIndex + 1)) << "=" << m_totalScore << " ";
+	}
+}
+
+/*
+BowlingGame~COD~Trace
+@VRF_SRS: NA
+@VRF_SDD: NA
+*/
+void BowlingGame::Players::Player::calculateFinalFrameScore(uint16_t &frameIndex)
+{
+	if (frameIndex == MAX_FRAME_COUNT - 1)
+	{
+		m_totalScore += m_frames[frameIndex]->getFirstRollScore();
+		m_totalScore += m_frames[frameIndex]->getSecondRollScore();
+
+		if (m_frames[frameIndex]->isStrike() || m_frames[frameIndex]->isSpare())
+		{
+			m_totalScore += m_frames[frameIndex]->getThirdRollScore();
+		}
+
+		std::cout << std::format("Frame:{}", (frameIndex + 1)) << "=" << m_totalScore << " ";
+	}
 }

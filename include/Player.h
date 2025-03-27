@@ -6,7 +6,8 @@
 
 #include "Frame.h"
 
-namespace BowlingGame::Players {
+namespace BowlingGame::Players
+{
 	class Player
 	{
 	public:
@@ -17,17 +18,17 @@ namespace BowlingGame::Players {
 		\brief	create frames for a player
 		\author	Vishvanathan K
 		\param	None
-		\return None
+		\return true if success, else false
 		*/
-		void createFrames();
+		bool createFrames();
 
 		/*
-		\brief	set player name 
+		\brief	set player name
 		\author	Vishvanathan K
 		\param	None
-		\return None
+		\return true if success, else false
 		*/
-		void setPlayerName(std::string_view first_name, std::string_view last_name);
+		bool setPlayerName(const std::string_view &first_name, const std::string_view &last_name);
 
 		/*
 		\brief	return player full name
@@ -43,7 +44,7 @@ namespace BowlingGame::Players {
 		\param	None
 		\return None
 		*/
-		void calculateTotalScore();
+		uint16_t calculateTotalScore();
 
 		/*
 		\brief	return total score of the player
@@ -60,11 +61,12 @@ namespace BowlingGame::Players {
 		\return None
 		*/
 		void getRollScore();
+
 	private:
-		std::vector<std::shared_ptr<BowlingGame::Frame::Frame>> mFrames; /*!< array of frames */
-		uint16_t mTotalScore; /*!< total score value */
-		std::string mFirstName; /*!< player first name */
-		std::string mLastName; /*!< player last name */
+		std::vector<std::shared_ptr<BowlingGame::Frame::Frame>> m_frames; /*!< array of frames */
+		uint16_t m_totalScore;											  /*!< total score value */
+		std::string m_firstName;										  /*!< player first name */
+		std::string m_lastName;											  /*!< player last name */
 
 		/*
 		\brief	get the each roll data from console window
@@ -72,6 +74,38 @@ namespace BowlingGame::Players {
 		\param	frame number, roll number, first roll score
 		\return score value
 		*/
-		int getScorFromConsole(int index, int rollNum, int prevScore);
+		inline uint16_t getRollScoreFromConsole(const uint16_t &frameIndex, const uint16_t &rollNum, const uint16_t &prevRollScore = 0);
+
+		/*
+		\brief	check the roll score is valid or not
+		\author	Vishvanathan K
+		\param	score of roll
+		\return true if valid, otherwise false
+		*/
+		inline bool isValidRollScore(const uint8_t &rollScore);
+
+		/*
+		\brief	calculate the total score from frame1 to frame8
+		\author	Vishvanathan K
+		\param	frame index
+		\return None
+		*/
+		void calculateFirstToEightFrameScore(uint16_t &frameIndex);
+
+		/*
+		\brief	calculate the total score of frame 9
+		\author	Vishvanathan K
+		\param	frame index
+		\return None
+		*/
+		void calculateNinthFrameScore(uint16_t &frameIndex);
+
+		/*
+		\brief	calculate the total score of frame 9
+		\author	Vishvanathan K
+		\param	frame index
+		\return None
+		*/
+		void calculateFinalFrameScore(uint16_t &frameIndex);
 	};
 }
