@@ -1,7 +1,4 @@
-#include <algorithm>
-#include <iostream>
-#include <format>
-#include <limits>
+
 
 #include "Player.h"
 
@@ -67,7 +64,27 @@ BowlingGame~COD~Trace
 @VRF_SRS: NA
 @VRF_SDD: NA
 */
-uint16_t BowlingGame::Players::Player::calculateTotalScore()
+const std::string &BowlingGame::Players::Player::getPlayerFirstName() const
+{
+	return m_firstName;
+}
+
+/*
+BowlingGame~COD~Trace
+@VRF_SRS: NA
+@VRF_SDD: NA
+*/
+const std::string &BowlingGame::Players::Player::getPlayerLastName() const
+{
+	return m_lastName;
+}
+
+/*
+BowlingGame~COD~Trace
+@VRF_SRS: NA
+@VRF_SDD: NA
+*/
+const uint16_t &BowlingGame::Players::Player::calculateTotalScore()
 {
 	uint16_t frameIndex{0};
 
@@ -84,7 +101,7 @@ BowlingGame~COD~Trace
 @VRF_SRS: NA
 @VRF_SDD: NA
 */
-uint16_t BowlingGame::Players::Player::getTotalScore()
+const uint16_t &BowlingGame::Players::Player::getTotalScore()
 {
 	return m_totalScore;
 }
@@ -195,7 +212,7 @@ void BowlingGame::Players::Player::calculateFirstToEightFrameScore(uint16_t &fra
 			}
 			else
 			{
-				m_totalScore += m_frames[frameIndex+1]->getSecondRollScore();
+				m_totalScore += m_frames[frameIndex + 1]->getSecondRollScore();
 			}
 		}
 		else if (m_frames[frameIndex]->isSpare())

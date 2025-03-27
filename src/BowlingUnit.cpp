@@ -22,6 +22,22 @@ BowlingGame~COD~Trace
 */
 bool BowlingGame::Unit::BowlingUnit::removePlayer(std::string_view firstName, std::string_view lastName)
 {
+    auto itr = m_players.erase(std::remove_if(m_players.begin(), m_players.end(), [&](auto player) -> bool
+                                              {
+        if ((player->getPlayerFirstName() == firstName) && (player->getPlayerLastName() == lastName)){
+            return true;
+        }
+        else
+        {
+            return false;
+        } }),
+                               m_players.end());
+
+    if (itr == m_players.end())
+    {
+        return true;
+    }
+
     return false;
 }
 
@@ -34,7 +50,16 @@ void BowlingGame::Unit::BowlingUnit::startGame()
 {
     std::for_each(m_players.begin(), m_players.end(), [](auto player)
                   {
-        player->createFrames();
-        player->getRollScore();
-        player->calculateTotalScore(); });
+            std::cout<<"\n"<<player->getPlayerName()<<" starts game...\n";
+            player->createFrames();
+            player->getRollScore();
+            if (player->calculateTotalScore() == MAX_TOTAL_SCORE)
+            {
+                std::cout<<"\nPrefect score !!!\n";
+            }
+            else
+            {
+                std::cout<<"\nGood score, keep it up !!!\n";
+            }
+            std::cout<<"\n"<<player->getPlayerName()<<" finished game. \n"; });
 }
