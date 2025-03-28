@@ -11,3 +11,17 @@ add_executable(BowlingGame
     src/Player.cpp 
     src/Frame.cpp
     src/BowlingUnit.cpp)
+
+add_subdirectory(googletest)
+
+target_link_libraries(BowlingGame gtest gtest_main)
+
+target_sources(BowlingGame PUBLIC 
+    Test/UT/FrameTest.cpp
+    Test/UT/PlayerTest.cpp
+    Test/UT/BowlingUnitTest.cpp
+)
+
+target_include_directories(BowlingGame PRIVATE
+    Test/UT
+)

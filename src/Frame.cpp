@@ -17,7 +17,7 @@ BowlingGame~COD~Trace
 */
 bool BowlingGame::Frame::Frame::setFirstRollScore(const uint16_t &rollScore)
 {
-	if (m_firstRoll != rollScore)
+	if (isValidRollScore(rollScore))
 	{
 		m_firstRoll = rollScore;
 		if (rollScore == MAX_ROLL_SCORE)
@@ -46,7 +46,7 @@ BowlingGame~COD~Trace
 */
 bool BowlingGame::Frame::Frame::setSecondRollScore(const uint16_t &rollScore)
 {
-	if (m_secondRoll != rollScore)
+	if (isValidRollScore(rollScore))
 	{
 		m_secondRoll = rollScore;
 		if (m_firstRoll == MIN_ROLL_SCORE && m_secondRoll == MAX_ROLL_SCORE)
@@ -132,9 +132,23 @@ BowlingGame~COD~Trace
 @VRF_SRS: NA
 @VRF_SDD: NA
 */
-const uint16_t &BowlingGame::Frame::Frame::getThirdRollScore() const
+uint16_t BowlingGame::Frame::Frame::getThirdRollScore() const
 {
-	return m_secondRoll;
+	return 0;
+}
+
+/*
+BowlingGame~COD~Trace
+@VRF_SRS: NA
+@VRF_SDD: NA
+*/
+bool BowlingGame::Frame::Frame::isValidRollScore(const uint8_t &rollScore)
+{
+	if ((rollScore < MIN_ROLL_SCORE) || (rollScore > MAX_ROLL_SCORE))
+	{
+		return false;
+	}
+	return true;
 }
 
 /*
@@ -153,7 +167,7 @@ BowlingGame~COD~Trace
 */
 bool BowlingGame::Frame::FinalFrame::setThirdRollScore(const uint16_t &rollScore)
 {
-	if (m_thirdRoll != rollScore)
+	if (isValidRollScore(rollScore))
 	{
 		m_thirdRoll = rollScore;
 		if (rollScore == MAX_ROLL_SCORE)
@@ -170,7 +184,7 @@ BowlingGame~COD~Trace
 @VRF_SRS: NA
 @VRF_SDD: NA
 */
-const uint16_t &BowlingGame::Frame::FinalFrame::getThirdRollScore() const
+uint16_t BowlingGame::Frame::FinalFrame::getThirdRollScore() const
 {
 	return m_thirdRoll;
 }
