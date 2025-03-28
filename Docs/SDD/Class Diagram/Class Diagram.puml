@@ -1,0 +1,49 @@
+@startuml BowlingGame
+
+skinparam Style strictuml
+skinparam SequenceMessageAlignment center
+
+class Frame {
+    -uint16_t m_firstRoll; 
+	-uint16_t m_secondRoll;
+	-uint16_t m_frameScore; 
+	-bool m_isFrameStrike; 
+	-bool m_isFrameSpare;
+    +virtual bool setFirstRollScore(const uint16_t &rollScore);
+    +virtual const uint16_t &getFirstRollScore() const;
+    +virtual bool setSecondRollScore(const uint16_t &rollScore);
+    +virtual const uint16_t &getSecondRollScore() const;
+    +virtual bool setThirdRollScore(const uint16_t &rollScore);
+    +virtual uint16_t getThirdRollScore() const;
+    +virtual const bool &isStrike() const;
+    +virtual const bool &isSpare() const;
+}
+
+class NormalFrame{
+   
+}
+
+class FinalFrame{
+    -uint16_t m_thirdRoll;
+	+bool setThirdRollScore(const uint16_t &rollScore);
+	+uint16_t getThirdRollScore() const;
+}
+
+Frame <|-- NormalFrame
+Frame <|-- FinalFrame
+
+class Player{
+    -std::vector<std::shared_ptr<BowlingGame::Frame::Frame>> m_frames;
+    -uint16_t m_totalScore;
+    -uint16_t m_frameCount;	 
+    -std::string m_firstName;
+    -std::string m_lastName;
+    +bool createFrames();
+    +bool setPlayerName(const std::string_view &first_name, const std::string_view &last_name);
+    +std::string getPlayerName();
+    +const uint16_t &calculateTotalScore();
+    +void getRollScore();
+}
+
+Player <- Frame
+@enduml

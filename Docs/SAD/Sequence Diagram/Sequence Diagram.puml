@@ -1,0 +1,20 @@
+@startuml BowlingGame
+
+skinparam Style strictuml
+skinparam SequenceMessageAlignment center
+Player -> BowlingUnit : Add Player
+BowlingUnit -> BowlingUnit : Start Game
+BowlingUnit -> Frame : Set Roll1 and Roll2 Score in Frame1
+BowlingUnit -> Frame : Set Roll1 and Roll2 Score in Frame2
+BowlingUnit -> Frame : Set Roll1 and Roll2 Score in Frame3
+BowlingUnit -> Frame : Set Roll1 and Roll2 Score in Frame4
+BowlingUnit -> Frame : Set Roll1 and Roll2 Score in Frame5
+BowlingUnit -> Frame : Set Roll1 and Roll2 Score in Frame6
+BowlingUnit -> Frame : Set Roll1 and Roll2 Score in Frame7
+BowlingUnit -> Frame : Set Roll1 and Roll2 Score in Frame8
+BowlingUnit -> Frame : Set Roll1 and Roll2 Score in Frame9
+BowlingUnit -> Frame : Set Roll1 Roll2 and Roll3 Score in Frame10
+
+BowlingUnit <- BowlingUnit : Calculate total score
+Player <- BowlingUnit : Remove Player
+@enduml
