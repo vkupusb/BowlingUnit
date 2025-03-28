@@ -87,7 +87,15 @@ namespace BowlingGame::Frame
 		\param	None
 		\return score data as unsigned int
 		*/
-		virtual const uint16_t &getThirdRollScore() const;
+		virtual uint16_t getThirdRollScore() const;
+
+		/*
+		\brief	check the roll score is valid or not
+		\author	Vishvanathan K
+		\param	score of roll
+		\return true if valid, otherwise false
+		*/
+		bool isValidRollScore(const uint8_t &rollScore);
 
 	protected:
 		uint16_t m_firstRoll;  /*!< first roll value */
@@ -124,7 +132,7 @@ namespace BowlingGame::Frame
 		\param	None
 		\return score data as unsigned int
 		*/
-		const uint16_t &getThirdRollScore() const;
+		uint16_t getThirdRollScore() const;
 
 	private:
 		uint16_t m_thirdRoll; /*!< third roll value */

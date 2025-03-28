@@ -74,11 +74,28 @@ namespace BowlingGame::Players
 		*/
 		void getRollScore();
 
+		/*
+		\brief	get the total number of frames created for the player
+		\author	Vishvanathan K
+		\param	None
+		\return frame count
+		*/
+		const uint16_t &getFrameCount() const;
+
+		/*
+		\brief	set the roll score for uint testing
+		\author	Vishvanathan K
+		\param	uint16_t rollNumber,frameIndex,rollScore
+		\return frame count
+		*/
+		bool setRollScore(const uint16_t &rollNumber, const uint16_t &frameIndex, const uint16_t &rollScore);
+
 	private:
 		std::vector<std::shared_ptr<BowlingGame::Frame::Frame>> m_frames; /*!< array of frames */
-		uint16_t m_totalScore;											  /*!< total score value */
-		std::string m_firstName;										  /*!< player first name */
-		std::string m_lastName;											  /*!< player last name */
+		uint16_t m_totalScore;
+		uint16_t m_frameCount;	 /*!< total score value */
+		std::string m_firstName; /*!< player first name */
+		std::string m_lastName;	 /*!< player last name */
 
 		/*
 		\brief	get the each roll data from console window

@@ -7,7 +7,7 @@ BowlingGame~COD~Trace
 @VRF_SRS: NA
 @VRF_SDD: NA
 */
-BowlingGame::Players::Player::Player() : m_totalScore{0}, m_firstName{}, m_lastName{}
+BowlingGame::Players::Player::Player() : m_totalScore{0}, m_firstName{}, m_lastName{}, m_frameCount{0}
 {
 	m_frames.reserve(MAX_FRAME_COUNT); // reserver space for 10 frames
 }
@@ -26,6 +26,7 @@ bool BowlingGame::Players::Player::createFrames()
 	}
 	auto frame = std::make_unique<BowlingGame::Frame::FinalFrame>();
 	m_frames.push_back(std::move(frame));
+	m_frameCount = m_frames.size();
 
 	return true;
 }
@@ -162,6 +163,43 @@ BowlingGame~COD~Trace
 @VRF_SRS: NA
 @VRF_SDD: NA
 */
+const uint16_t &BowlingGame::Players::Player::getFrameCount() const
+{
+	return m_frameCount;
+}
+
+/*
+BowlingGame~COD~Trace
+@VRF_SRS: NA
+@VRF_SDD: NA
+*/
+bool BowlingGame::Players::Player::setRollScore(const uint16_t &rollNumber, const uint16_t &frameIndex, const uint16_t &rollScore)
+{
+	bool success{false};
+	if (frameIndex < 0 || frameIndex >= MAX_FRAME_COUNT)
+	{
+		return false;
+	}
+	switch (rollNumber)
+	{
+	case 1:
+		success = m_frames[frameIndex]->setFirstRollScore(rollScore);
+		break;
+	case 2:
+		success = m_frames[frameIndex]->setSecondRollScore(rollScore);
+		break;
+	case 3:
+		success = m_frames[frameIndex]->setThirdRollScore(rollScore);
+		break;
+	}
+	return success;
+}
+
+/*
+BowlingGame~COD~Trace
+@VRF_SRS: NA
+@VRF_SDD: NA
+*/
 uint16_t BowlingGame::Players::Player::getRollScoreFromConsole(const uint16_t &frameIndex, const uint16_t &rollNum, const uint16_t &prevRollScore)
 {
 	bool isValidScore{false};
@@ -275,6 +313,6 @@ void BowlingGame::Players::Player::calculateFinalFrameScore(uint16_t &frameIndex
 			m_totalScore += m_frames[frameIndex]->getThirdRollScore();
 		}
 
-		std::cout << std::format("Frame:{}", (frameIndex + 1)) << "=" << m_totalScore << " ";
+		std::cout << std::format("Frame:{}", (frameIndex + 1)) << "=" << m_totalScore << "\n";
 	}
 }
